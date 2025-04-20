@@ -1,17 +1,17 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Breathe, MessageSquare, Happy, Sad, Angry, Tired, Music } from "lucide-react";
+import { MessageSquare, Music } from "lucide-react";
+import { Wind, Smile, Frown, Zap, AlertTriangle, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const MOODS = [
-  { name: "happy", emoji: "😊", icon: Happy },
-  { name: "sad", emoji: "😢", icon: Sad },
-  { name: "anxious", emoji: "😰", icon: Tired },
-  { name: "excited", emoji: "🤩", icon: Happy },
-  { name: "angry", emoji: "😡", icon: Angry },
-  { name: "tired", emoji: "😴", icon: Tired }
+  { name: "happy", emoji: "😊", icon: Smile },
+  { name: "sad", emoji: "😢", icon: Frown },
+  { name: "anxious", emoji: "😰", icon: AlertTriangle },
+  { name: "excited", emoji: "🤩", icon: Zap },
+  { name: "angry", emoji: "😡", icon: AlertTriangle },
+  { name: "tired", emoji: "😴", icon: Moon }
 ];
 
 const MOOD_RESPONSES = {
@@ -28,7 +28,6 @@ const Home = () => {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [botMessage, setBotMessage] = useState("");
   
-  // Load saved user data from localStorage
   useEffect(() => {
     const savedName = localStorage.getItem("userName");
     if (savedName) setUserName(savedName);
@@ -44,10 +43,8 @@ const Home = () => {
     setSelectedMood(mood);
     setBotMessage(MOOD_RESPONSES[mood as keyof typeof MOOD_RESPONSES] || "");
     
-    // Save to localStorage
     localStorage.setItem("lastMood", mood);
     
-    // Also save timestamp for mood tracking
     const moodHistory = JSON.parse(localStorage.getItem("moodHistory") || "[]");
     moodHistory.push({
       mood,
@@ -94,7 +91,7 @@ const Home = () => {
           <Button 
             className="w-full h-24 flex flex-col items-center justify-center gap-1 bg-neuroPurple hover:bg-neuroPurple/90"
           >
-            <Breathe size={24} />
+            <Wind size={24} />
             <span>Breathe</span>
           </Button>
         </Link>

@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Puzzle, MessageSquare, Chart, Music } from "lucide-react";
+import { Home, Puzzle, MessageSquare, Music } from "lucide-react";
+import { BarChart } from "lucide-react";
 
 const BottomNav = () => {
   const location = useLocation();
@@ -15,7 +16,7 @@ const BottomNav = () => {
     { path: "/", icon: Home, label: "Nest" },
     { path: "/toolkit", icon: Puzzle, label: "Toolkit" },
     { path: "/neurobot", icon: MessageSquare, label: "NeuroBot" },
-    { path: "/mind-graph", icon: Chart, label: "Graph" },
+    { path: "/mind-graph", icon: BarChart, label: "Graph" },
     { path: "/energy-lab", icon: Music, label: "Energy" }
   ];
 

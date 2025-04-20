@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Happy, Sad, Angry, Tired } from "lucide-react";
+import { Smile, Frown, AlertTriangle, Moon } from "lucide-react";
 
 interface Activity {
   title: string;
@@ -11,7 +10,6 @@ interface Activity {
   duration?: string;
 }
 
-// Activities based on mood
 const ACTIVITIES_BY_MOOD: Record<string, Activity[]> = {
   happy: [
     { emoji: "🏃‍♂️", title: "Energy Boost", description: "Do 10 jumping jacks to boost your happy energy!", duration: "30 sec" },
@@ -45,7 +43,6 @@ const ACTIVITIES_BY_MOOD: Record<string, Activity[]> = {
   ]
 };
 
-// Default activities if no mood is selected
 const DEFAULT_ACTIVITIES: Activity[] = [
   { emoji: "🌞", title: "Sunshine Moment", description: "Stand by a window or go outside for 1 minute of sunlight", duration: "1 min" },
   { emoji: "💪", title: "Energy Move", description: "Do 5 gentle stretches or jumping jacks", duration: "1 min" },
@@ -60,13 +57,11 @@ const EnergyLab = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   
   useEffect(() => {
-    // Get the last selected mood from localStorage
     const lastMood = localStorage.getItem("lastMood");
     if (lastMood) {
       setCurrentMood(lastMood);
       generateActivity(lastMood);
     } else {
-      // If no mood is saved, use a default activity
       const randomDefaultActivity = DEFAULT_ACTIVITIES[Math.floor(Math.random() * DEFAULT_ACTIVITIES.length)];
       setCurrentActivity(randomDefaultActivity);
     }
@@ -84,7 +79,6 @@ const EnergyLab = () => {
   const handleComplete = () => {
     setIsCompleted(true);
     
-    // Save activity completion to localStorage
     const completedActivities = JSON.parse(localStorage.getItem("completedActivities") || "[]");
     completedActivities.push({
       activity: currentActivity?.title,
@@ -103,19 +97,18 @@ const EnergyLab = () => {
     }
   };
   
-  // Get appropriate icon for current mood
   const getMoodIcon = () => {
     switch (currentMood) {
       case "happy":
       case "excited":
-        return <Happy className="h-6 w-6 text-yellow-500" />;
+        return <Smile className="h-6 w-6 text-yellow-500" />;
       case "sad":
-        return <Sad className="h-6 w-6 text-blue-500" />;
+        return <Frown className="h-6 w-6 text-blue-500" />;
       case "angry":
-        return <Angry className="h-6 w-6 text-red-500" />;
+        return <AlertTriangle className="h-6 w-6 text-red-500" />;
       case "tired":
       case "anxious":
-        return <Tired className="h-6 w-6 text-purple-500" />;
+        return <Moon className="h-6 w-6 text-purple-500" />;
       default:
         return null;
     }
