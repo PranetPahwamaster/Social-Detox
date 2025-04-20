@@ -46,13 +46,16 @@ const BreatheTool = () => {
             }
           });
           
-          // Use the phase from functional update
-          return (prevPhase) => {
-            if (prevPhase === "inhale") return 7;
-            if (prevPhase === "hold") return 8;
-            if (prevPhase === "exhale") return 4;
-            return 2; // rest
-          };
+          // Get the next phase value
+          const nextPhase = phase === "inhale" ? "hold" : 
+                           phase === "hold" ? "exhale" : 
+                           phase === "exhale" ? "rest" : "inhale";
+          
+          // Set counter based on the next phase
+          if (nextPhase === "inhale") return 4;
+          if (nextPhase === "hold") return 7;
+          if (nextPhase === "exhale") return 8;
+          return 2; // rest
         }
         return prev - 1;
       });
