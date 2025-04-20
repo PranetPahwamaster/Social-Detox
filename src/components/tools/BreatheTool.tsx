@@ -43,7 +43,9 @@ const BreatheTool = () => {
             }
           });
           
-          return currentPhase === "inhale" ? 7 : currentPhase === "hold" ? 8 : currentPhase === "exhale" ? 4 : 2;
+          // Use the phase directly from the component state
+          // instead of an undefined "currentPhase" variable
+          return phase === "inhale" ? 7 : phase === "hold" ? 8 : phase === "exhale" ? 4 : 2;
         }
         return prev - 1;
       });
