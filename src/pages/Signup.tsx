@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
-import { LogIn } from "lucide-react";
 import Login from "./Login";
+import Logo from "@/components/ui/Logo"; // We'll create this component
 
 export default function Signup() {
   return (
@@ -13,7 +13,9 @@ export default function Signup() {
         }} />
       </div>
       
-      <div className="container relative max-w-md px-4 py-8 z-10">
+      <div className="container relative max-w-md px-4 py-8 z-10 flex flex-col items-center">
+        <Logo className="mb-8 w-24 h-24" />
+        
         <div className="text-center mb-8 space-y-3">
           <h1 className="font-nunito text-4xl font-bold bg-gradient-to-r from-neuroPurple to-neuroTeal bg-clip-text text-transparent">
             NeuroNest
