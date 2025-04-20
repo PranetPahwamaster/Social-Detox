@@ -48,12 +48,12 @@ const DISTRACTIONS: DistractionItem[] = [
   {
     type: "inspiration",
     title: "Mind Quote",
-    content: ""The mind is everything. What you think, you become." – Buddha"
+    content: "'The mind is everything. What you think, you become.' – Buddha"
   },
   {
     type: "inspiration",
     title: "Positive Thought",
-    content: ""Your mind is a garden. Your thoughts are the seeds. You can grow flowers or you can grow weeds.""
+    content: "'Your mind is a garden. Your thoughts are the seeds. You can grow flowers or you can grow weeds.'"
   },
   {
     type: "puzzle",
