@@ -1,8 +1,8 @@
 
 import { Link } from "react-router-dom";
-import { Login } from "lucide-react";
-import { Login as LoginPage } from "./Login";
+import { LogIn } from "lucide-react";
+import Login from "./Login";
 
 export default function Signup() {
-  return <LoginPage />;
+  return <Login />;
 }
