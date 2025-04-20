@@ -4,6 +4,7 @@ import { MessageSquare, Send } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   role: "user" | "bot";
@@ -19,20 +20,59 @@ const INITIAL_MESSAGES: Message[] = [
   }
 ];
 
-// Predefined bot responses for the demo
-const BOT_RESPONSES = [
-  "That's a great question! I'm here to help you figure things out.",
-  "I understand how you feel. It's totally normal to have these thoughts.",
-  "Let's look at this from a different angle. What would make you happy right now?",
-  "Sometimes our brains can be tricky! Remember that thoughts aren't always facts.",
-  "You're doing great just by talking about this. That takes courage!",
-  "What's one small thing you could do today that might make you feel a little better?",
-  "I'm really proud of you for sharing that with me. It's not always easy.",
-  "Take a deep breath with me. In... and out. How does that feel?",
-  "What would your best friend say to you right now?",
-  "It's okay to feel this way. Your emotions are important and valid.",
-  "Would a quick brain break help? Maybe try the Breathe tool or a fun distraction?",
-  "You're stronger than you think. You've gotten through tough times before!"
+// For a more realistic AI-like experience with varied responses
+const AI_KNOWLEDGE_BASE = {
+  "feelings": [
+    "It sounds like you're going through a lot right now. Your feelings are completely valid.",
+    "Emotions are complex, but they're also what make us human. What you're feeling makes sense to me.",
+    "Thank you for sharing that with me. It takes courage to talk about your feelings.",
+    "I'm here to listen whenever you need to express yourself. Your emotional well-being matters.",
+    "It's perfectly okay to feel that way. Many people experience similar emotions."
+  ],
+  "anxiety": [
+    "When you're feeling anxious, try the 5-4-3-2-1 technique: notice 5 things you can see, 4 things you can touch, 3 things you can hear, 2 things you can smell, and 1 thing you can taste.",
+    "Deep breathing can help reduce anxiety. Try breathing in for 4 counts, holding for 7, and exhaling for 8.",
+    "Anxiety is often about future concerns. Try to gently bring your attention back to the present moment.",
+    "Physical activity is a great way to reduce anxiety. Even a short walk can help clear your mind."
+  ],
+  "depression": [
+    "Depression can make everything feel overwhelming. It's okay to focus on just one small task at a time.",
+    "Remember that depression lies to you about your worth and capabilities. You matter more than you know.",
+    "Self-care isn't selfish - it's necessary. What's one small thing you could do for yourself today?",
+    "Even on the hardest days, you're doing better than you think. I'm here to support you."
+  ],
+  "math": [
+    "I'd be happy to help with that calculation! {RESULT}",
+    "The answer to your math question is {RESULT}",
+    "Let me solve that for you: {RESULT}",
+    "Based on my calculations, I get {RESULT}"
+  ],
+  "science": [
+    "From a scientific perspective, {FACT}",
+    "According to scientific understanding, {FACT}",
+    "Science tells us that {FACT}",
+    "That's an interesting scientific question! {FACT}"
+  ],
+  "default": [
+    "I'm here to help with that. Can you tell me more?",
+    "That's an interesting question. Let me share some thoughts on that.",
+    "I appreciate you asking about that. Here's what I can tell you.",
+    "Thanks for bringing that up. I'll do my best to address your question.",
+    "I'm listening and I want to understand better. Could you elaborate a bit more?",
+    "I'm designed to be helpful with a variety of topics. Let me try to assist with that."
+  ]
+};
+
+// Scientific facts for demonstrating knowledge
+const SCIENCE_FACTS = [
+  "the human brain contains approximately 86 billion neurons, each forming thousands of connections.",
+  "water can exist in three states of matter simultaneously at what's called the 'triple point'.",
+  "DNA in a single human cell would stretch to about 2 meters if fully extended.",
+  "quantum entanglement allows particles to be connected regardless of distance, what Einstein called 'spooky action at a distance'.",
+  "light takes approximately 8 minutes and 20 seconds to travel from the Sun to Earth.",
+  "every atom in your body was created inside stars billions of years ago through nuclear fusion.",
+  "the Higgs boson particle gives mass to other fundamental particles, and was discovered in 2012 after a 50-year search.",
+  "your body contains more bacterial cells than human cells, forming what scientists call the microbiome."
 ];
 
 const NeuroBot = () => {
@@ -40,6 +80,7 @@ const NeuroBot = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
   
   // Load chat history from localStorage
   useEffect(() => {
@@ -85,21 +126,111 @@ const NeuroBot = () => {
     setInput("");
     setIsTyping(true);
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+    // Simulate API delay more realistically
+    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1500));
     
-    // Get random response from our predefined list
-    const botResponse = BOT_RESPONSES[Math.floor(Math.random() * BOT_RESPONSES.length)];
-    
-    // Add bot response
+    // Generate a more realistic AI response based on the content
     const botMessage: Message = {
       role: "bot",
-      content: botResponse,
+      content: generateResponse(input),
       timestamp: new Date()
     };
     
     setMessages(prev => [...prev, botMessage]);
     setIsTyping(false);
+    
+    // Update badges for conversation milestones
+    checkForBadges();
+  };
+  
+  const generateResponse = (userInput: string) => {
+    const input = userInput.toLowerCase();
+    
+    // Check for math calculations
+    if (/(\d+\s*[\+\-\*\/]\s*\d+)/.test(input)) {
+      try {
+        // Simple math calculation - this is simplified and not secure for production
+        const calculation = input.match(/(\d+\s*[\+\-\*\/]\s*\d+)/)?.[0];
+        if (calculation) {
+          // eslint-disable-next-line no-eval
+          const result = eval(calculation);
+          const template = getRandomResponse("math");
+          return template.replace("{RESULT}", result);
+        }
+      } catch (e) {
+        return "I'm sorry, I couldn't calculate that. Could you try rephrasing?";
+      }
+    }
+    
+    // Check for feelings-related content
+    if (input.includes("feel") || input.includes("sad") || input.includes("happy") || 
+        input.includes("upset") || input.includes("worried") || input.includes("stressed")) {
+      return getRandomResponse("feelings");
+    }
+    
+    // Check for anxiety-related content
+    if (input.includes("anxiety") || input.includes("anxious") || input.includes("panic") || 
+        input.includes("nervous") || input.includes("worry")) {
+      return getRandomResponse("anxiety");
+    }
+    
+    // Check for depression-related content
+    if (input.includes("depress") || input.includes("hopeless") || input.includes("worthless") || 
+        input.includes("empty") || input.includes("tired of everything")) {
+      return getRandomResponse("depression");
+    }
+    
+    // Check for science-related questions
+    if (input.includes("science") || input.includes("why does") || input.includes("how does") || 
+        input.includes("what is") || input.includes("explain")) {
+      const fact = SCIENCE_FACTS[Math.floor(Math.random() * SCIENCE_FACTS.length)];
+      const template = getRandomResponse("science");
+      return template.replace("{FACT}", fact);
+    }
+    
+    // Default response if no specific category matches
+    return getRandomResponse("default");
+  };
+  
+  const getRandomResponse = (category: string) => {
+    const responses = AI_KNOWLEDGE_BASE[category as keyof typeof AI_KNOWLEDGE_BASE] || AI_KNOWLEDGE_BASE.default;
+    return responses[Math.floor(Math.random() * responses.length)];
+  };
+  
+  const checkForBadges = () => {
+    const uniqueMessages = messages.filter(msg => msg.role === "user").length;
+    const badges = JSON.parse(localStorage.getItem("badges") || "[]");
+    const unviewedBadges = JSON.parse(localStorage.getItem("unviewedBadges") || "[]");
+    
+    if (uniqueMessages >= 5 && !badges.includes("neurobot-friend")) {
+      badges.push("neurobot-friend");
+      unviewedBadges.push({
+        id: "neurobot-friend",
+        name: "NeuroBot Friend",
+        description: "Had 5+ conversations with NeuroBot",
+        icon: "🤖"
+      });
+      
+      toast({
+        title: "New Badge Unlocked! 🎉",
+        description: "🤖 NeuroBot Friend: Had 5+ conversations",
+        action: (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => {
+              window.location.href = "/mind-graph";
+              localStorage.setItem("unviewedBadges", JSON.stringify([]));
+            }}
+          >
+            View Badges
+          </Button>
+        ),
+      });
+    }
+    
+    localStorage.setItem("badges", JSON.stringify(badges));
+    localStorage.setItem("unviewedBadges", JSON.stringify(unviewedBadges));
   };
 
   return (
@@ -141,7 +272,7 @@ const NeuroBot = () => {
                 <span className="animate-bounce" style={{ animationDelay: "0.2s" }}>.</span>
                 <span className="animate-bounce" style={{ animationDelay: "0.4s" }}>.</span>
               </div>
-              <span className="text-xs">NeuroBot is typing</span>
+              <span className="text-xs">NeuroBot is thinking</span>
             </div>
           )}
           

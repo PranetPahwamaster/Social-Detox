@@ -3,20 +3,24 @@ import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Volume1, Volume2, VolumeOff } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface SoundOption {
   name: string;
   emoji: string;
   src: string;
+  color?: string;
 }
 
 const SOUND_OPTIONS: SoundOption[] = [
-  { name: "Rain", emoji: "🌧️", src: "https://assets.mixkit.co/sfx/preview/mixkit-light-rain-loop-2393.mp3" },
-  { name: "Ocean", emoji: "🌊", src: "https://assets.mixkit.co/sfx/preview/mixkit-ocean-waves-loop-1196.mp3" },
-  { name: "Forest", emoji: "🌲", src: "https://assets.mixkit.co/sfx/preview/mixkit-forest-ambience-1230.mp3" },
-  { name: "Lo-Fi", emoji: "🎵", src: "https://assets.mixkit.co/sfx/preview/mixkit-lo-fi-beat-287.mp3" },
-  { name: "Fire", emoji: "🔥", src: "https://assets.mixkit.co/sfx/preview/mixkit-campfire-crackles-1330.mp3" },
-  { name: "White Noise", emoji: "🌫️", src: "https://assets.mixkit.co/sfx/preview/mixkit-white-noise-ambience-1197.mp3" }
+  { name: "Rain", emoji: "🌧️", src: "https://assets.mixkit.co/sfx/preview/mixkit-light-rain-loop-2393.mp3", color: "from-blue-300/40 to-blue-500/40" },
+  { name: "Ocean", emoji: "🌊", src: "https://assets.mixkit.co/sfx/preview/mixkit-ocean-waves-loop-1196.mp3", color: "from-cyan-300/40 to-blue-400/40" },
+  { name: "Forest", emoji: "🌲", src: "https://assets.mixkit.co/sfx/preview/mixkit-forest-ambience-1230.mp3", color: "from-green-300/40 to-green-600/40" },
+  { name: "Lo-Fi", emoji: "🎵", src: "https://elements.envato.com/lofi-chill-hop-3YLSVEU.mp3", color: "from-purple-300/40 to-purple-500/40" },
+  { name: "Fire", emoji: "🔥", src: "https://assets.mixkit.co/sfx/preview/mixkit-campfire-crackles-1330.mp3", color: "from-orange-300/40 to-red-400/40" },
+  { name: "White Noise", emoji: "🌫️", src: "https://assets.mixkit.co/sfx/preview/mixkit-white-noise-ambience-1197.mp3", color: "from-slate-300/40 to-slate-500/40" },
+  { name: "Birds", emoji: "🐦", src: "https://assets.mixkit.co/sfx/preview/mixkit-birds-in-the-wilderness-918.mp3", color: "from-yellow-300/40 to-amber-400/40" },
+  { name: "Stream", emoji: "🏞️", src: "https://assets.mixkit.co/sfx/preview/mixkit-stream-in-the-forest-1229.mp3", color: "from-teal-300/40 to-cyan-500/40" }
 ];
 
 const ZenSoundsTool = () => {
@@ -93,18 +97,23 @@ const ZenSoundsTool = () => {
             variant="outline"
             className={`h-16 flex items-center justify-center gap-2 ${
               currentSound?.name === sound.name && isPlaying
-                ? "bg-neuroLight dark:bg-accent border-neuroPurple"
+                ? `bg-gradient-to-r ${sound.color || ""} border-neuroPurple`
                 : ""
-            }`}
+            } hover:bg-gradient-to-r hover:${sound.color || ""} hover:opacity-80 transition-all`}
           >
             <span className="text-2xl">{sound.emoji}</span>
             <span>{sound.name}</span>
+            {currentSound?.name === sound.name && isPlaying && (
+              <Badge variant="secondary" className="ml-1 animate-pulse">
+                Playing
+              </Badge>
+            )}
           </Button>
         ))}
       </div>
       
       {currentSound && (
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-4 flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-purple-100/30 to-blue-100/30 dark:from-purple-900/30 dark:to-blue-900/30">
           <button onClick={() => handleVolumeChange(0)}>
             {getVolumeIcon()}
           </button>
