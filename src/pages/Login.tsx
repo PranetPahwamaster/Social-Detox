@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Facebook, LogIn, Mail } from "lucide-react";
@@ -104,18 +103,13 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-background via-background to-background/80">
-      <div className="container max-w-md px-4">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">NeuroNest</h1>
-          <p className="text-muted-foreground">Your digital mind sanctuary</p>
-        </div>
-        
-        <Card className="w-full backdrop-blur-sm bg-card/80 border border-border/50">
+    <div className="w-full flex items-center justify-center">
+      <div className="container max-w-md">
+        <Card className="w-full backdrop-blur-md bg-background/80 border border-border/50 shadow-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
+            <CardTitle className="text-2xl text-center font-nunito">Welcome</CardTitle>
             <CardDescription className="text-center">
-              Sign in to your account or create a new one
+              Sign in to continue your journey
             </CardDescription>
           </CardHeader>
           
@@ -320,7 +314,7 @@ export default function Login() {
             </TabsContent>
           </Tabs>
           
-          <CardFooter className="flex flex-col space-y-2 mt-2">
+          <CardFooter className="flex flex-col space-y-4 mt-6 border-t border-border/50 pt-6">
             <p className="text-xs text-center text-muted-foreground">
               By signing in, you agree to our Terms of Service and Privacy Policy.
             </p>
